@@ -29,17 +29,34 @@ $(function () {
             }
         }
     })
-    // $('#form_reg').on('submit', function (e) {
-    //     // 1. 阻止默认的提交行为
-    //     e.preventDefault()
-    //     $.post('http://ajax.frontend.itheima.net/api/reguser', {
-    //         username: $
-    //             ('#form_reg[name=username]').val(), password: $('#form_reg[name=password]').val()
-    //     }, function (res) {
-    //         if (res.status !== 0) {
-    //             return console.log(res.message)
-    //         }
-    //         console.log('注册成功')
-    //     })
-    // })
+    $('#form_reg').on('submit', function (e) {
+        // 1. 阻止默认的提交行为
+        e.preventDefault()
+        $.post('/api/reguser', {
+            username: $('#form_reg [name=username]').val(),
+            password: $('#form_reg [name=password]').val()
+        }, function (res) {
+            if (res.status !== 0) {
+                return layer.msg(res.message)
+            }
+            layer.msg('注册成功,请登录！')
+            $('#link_login').click();
+        })
+    })
+    $('#form_login').submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/api/login',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function (res) {
+                if (res.status !== 0) {
+                    return layer.msg('登录失败!');
+                }
+                layer.msg('登录成功!')
+                localStorage.setItem('token', res.token)
+                location.href = '/index.html';
+            }
+        })
+    })
 })  
